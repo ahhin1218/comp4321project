@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang = "en">
+
+<head>
+    <title> COMP4321 Group 7 Search Engine </title>
+</head>
+
+<body>
+    <a href = "{{ url_for('searchbar') }}"> <p> COMP4321 Group 7 Search Engine </p> </a>
+    <div>
+        <form class = "search-row" action = "{{ url_for('submit_search') }}" method = "post">
+        <input type = "text" id = "searchbar" name = "searchbar" class = "searchbar" {{ QUERY }}>
+    </div>
+    <div>    
+        <input type = "checkbox" id = "matching" name = "matching" class = "matching">
+        <label for = "matching"> All phrases must match. </label>
+        <button type = "submit" value = "Submit" class = "search-button"> Search </button>
+    </div>
+    </form>
+        {% if RESULTS | length != 1 %}
+            <p> Found {{ RESULTS | length }} document(s) matching in {{ TIME_TAKEN *1000 }} milliseconds in the database. </p>
+        {% else %}
+            <p> Found {{ RESULTS | length }} document(s) matching in {{ TIME_TAKEN *1000 }} milliseconds in the database. </p>
+        {% endif %}
+    <div>
+        {% for result in RESULTS %}
+        <table>
+        <table style = "width: 100%">
+            <tr>
+            <div>
+                <td> <p> Score: {{ result.score }} </td> <td> <h class = "result-title"> {{ result.title }} </h> </p>
+                <p> URL: <a href="{{ result.url }}"> {{ result.url }} </a> </p>
+                <p> Last modification date: {{ result.time_formatted }}, Size of page: {{ result.size }} </p>
+                <div>
+                    {% for keyword, freq in result.keywords %}
+                        {{ keyword }} ({{ freq }});
+                    {% endfor %}
+                </div>
+                    {% for parent in result.parent_links %}
+                        <p> Parent link: <a href = "{{ parent }}"> {{ parent }} </a> </p>
+                    {% endfor %}
+                    {% for child in result.child_links %}
+                        <p> Child link: <a href = "{{ child }}"> {{ child }} </a> </p>
+                    {% endfor %}
+                </td>
+                <p> ——————————————————————————————————————————————————————————————————————————————————————————————————————————————– </p>
+            </div>
+            </tr>
+        {% endfor %}
+    </div>
+</body>
